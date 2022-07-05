@@ -1,0 +1,67 @@
+{% extends 'storeapp/base.html' %} {% block content %}
+<style>
+  .minicontainer {
+    width: 100%;
+    height: auto;
+    border: 1px solid lightgray;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  .imgcontainer {
+    width: 100px;
+    height: 100px;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+  }
+  .imgcontainer img {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-sm-12 col-lg-3 col-xl-3">
+      <ul class="list-group" style = "  list-style-type: none" >
+        <li><a class="dropdown-item" href="{% url 'account' %}"><span><i class="bi bi-person-check"></i></span> My Account</a></li>
+        <li><a class="dropdown-item" href="{% url 'order' %} "><span><i class="bi bi-cart"></i></span> Orders</a></li>
+        <li><a class="dropdown-item" href="{% url 'saveitems' %}"><span><i class="bi bi-heart"> </i>Saved Items</a></li>
+      </ul>
+    </div>
+
+    <div class="col-12 col-sm-12 col-lg-8 col-xl-8">
+        <div class = 'row'><h4><strong>Saved Items</strong></h4></div>
+      {% for item in saveitems %}
+
+      <div class="minicontainer">
+        <div class="row">
+          <div class="col-3">
+            <div class="imgcontainer">
+              <img src=" {{item.product.image.url}} " />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="itemName">
+              <p>
+                {{item.product.name}} -- (This is a wider card with supporting
+                text)
+              </p>
+              <div style = 'display:flex; width: 200px; justify-content: space-between'> <h4>${{item.product.price|floatformat:2}}</h4>
+                <h5 style="text-decoration: line-through;">${{item.product.old_price|floatformat:2}}</h5></div>
+             
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="action">
+              <button class="btn btn-primary">Buy Now</button>
+              <br /><br />
+              <button class="btn btn-danger">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

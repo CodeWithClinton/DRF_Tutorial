@@ -1,0 +1,61 @@
+{% extends 'storeapp/base.html' %}
+{% block content %}
+<style>
+  .col-6{
+    margin-bottom: 20px;
+  }
+
+  input{
+    height: 40px;
+  }
+  
+</style><form method="POST">
+<div class = 'container' style = 'width: 60%'>
+
+    <div class="row">
+      <h1>Create Account</h1>
+      {% csrf_token %}
+      
+      {% for field in form %}
+      
+        <div class="col-6">
+          {{field.label}}
+          {{field}}
+        </div>
+        {% endfor %}
+        <button type="submit" class = 'btn btn-lg btn-info'>Create Account</button>
+      
+        <!-- <div class="col-6">
+          <input type="text" class="form-control" placeholder="Last name" aria-label="Last name">
+        </div> -->
+      
+      
+      
+        <!-- <div class="col-6">
+          <input type="text" class="form-control" placeholder="First name" aria-label="First name">
+        </div> -->
+        <!-- <div class="col-6">
+          <input type="text" class="form-control" placeholder="Last name" aria-label="Last name">
+        </div> -->
+      
+
+      
+        <!-- <div class="col-6">
+          <input type="text" class="form-control" placeholder="First name" aria-label="First name">
+        </div> -->
+        <!-- <div class="col-6">
+          <input type="text" class="form-control" placeholder="Last name" aria-label="Last name">
+        </div> -->
+      
+      </div>
+
+</div>
+</form>
+<script>
+  let inputs = document.getElementsByTagName('input')
+  for(let i = 0; i<inputs.length; i++){
+    inputs[i].classList.add('form-control')
+    
+  }
+</script>
+{% endblock %}

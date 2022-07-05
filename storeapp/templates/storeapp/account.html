@@ -1,0 +1,77 @@
+{% extends 'storeapp/base.html' %} {% block content %}
+<style>
+ .nbtn {
+    background-color: #f0f8ff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+  }
+  .nbtn:hover {
+    background-color: lightblue;
+  }
+  i {
+    font-size: 20px;
+  }
+</style>
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-sm-12 col-lg-3 col-xl-3">
+      <ul class="list-group" style = "  list-style-type: none" >
+        <li><a class="dropdown-item" href="{% url 'account' %}"><span><i class="bi bi-person-check"></i></span> My Account</a></li>
+        <li><a class="dropdown-item" href="{% url 'order' %} "><span><i class="bi bi-cart"></i></span> Orders</a></li>
+        <li><a class="dropdown-item" href="{% url 'saveitems' %}"><span><i class="bi bi-heart"> </i>Saved Items</a></li>
+      </ul>
+    </div>
+
+    <div
+      class="col-12 col-sm-12 col-lg-9 col-xl-9"
+      style="border: 1px solid lightgray"
+    >
+      <div class="row">
+        <div class="col-12 col-sm-12 col-lg-6 col-xl-6" style="border: 0.5px solid lightgray">
+          <div class="row">
+            <div class="col-10" style="border: 1px solid lightgray">
+              <h5>ACCOUNT INFORMATION</h5>
+            </div>
+            <div class="col-2" style="border: 1px solid lightgray">
+              <a href = " {% url 'updateaccount' %} ">
+              <button class= "nbtn" ><i class="bi bi-pen"></i></button>
+            </a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <p>{{customer.user.first_name}} {{customer.user.last_name}}</p>
+              <p>{{customer.user.email}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-lg-6 col-xl-6" style="border: 1px solid lightgray">
+          <div class="row">
+            <div class="col-10" style="border: 1px solid lightgray">
+              <h5>ADDRESS BOOK</h5>
+            </div>
+            <div class="col-2" style="border: 1px solid lightgray">
+                <a href = " {% url 'changeaddress' %} ">
+              <button class= "nbtn"><i class="bi bi-pen"></i></button></a>
+            </div>
+          </div>
+          <div class="row">
+            {% for address in address %}
+            <div class="col-12">
+              <p>
+                {{address.home_address}} {{address.bus_stop}}, {{address.city}},
+                {{address.state}}
+              </p>
+              <p>{{customer.user.email}}</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

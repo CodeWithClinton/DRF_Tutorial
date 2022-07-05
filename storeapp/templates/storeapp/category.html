@@ -1,0 +1,30 @@
+{% extends 'storeapp/base.html' %} 
+{% block content %}
+<div class = 'container'>
+    <div class = 'row'>
+        <h4> {{category.title}} </h4>
+    </div>
+
+    <div class = 'row'>
+        {% for product in products %}
+        <div class = 'col-12 col-sm-6 col-lg-2 col-xl-2'>
+            <a href = "{% url 'detail' product.slug %}">
+            <div class="card position-relative" style="width: 100%;">
+                <!-- <span class="discount">
+                    -30%
+                  </span> -->
+                <img src="{{product.image.url}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <p class="card-title"> {{product.name}} </p>
+                  <h4 class="card-text">  ${{ product.price|floatformat:2 }} </h4>
+                  <h6 class="card-text" style = 'text-decoration: line-through'>  ${{product.old_price|floatformat:2}} </h6>
+                </div>
+              </div>
+            </a>
+        
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends 'storeapp/base.html' %}
+{% block content %}
+
+<!-- Quantity and Price Section -->
+<style>
+    #cart_image{
+        width: 50px;
+        height: 50px;
+    }
+    #cart_image img{
+        width: 100%;
+        height: 100%
+    }
+   .seen{
+     display: none
+   }
+</style>
+<div class = 'container' style = "width: 70%">
+    <table class="table table-light table-hover">
+        <thead>
+          <tr>
+            <th scope="col"><a href = " {% url 'index' %} "><button type="button" class="btn btn-primary btn-lg">Continue Shopping →</button></a></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+         
+          <tr>
+            <th scope="row"><h3 id = 'list_of_items'><strong>Items: {{cart.num_of_items}}</strong></h3></th>
+            <td></td>
+            <td><h3 id = 'cartTotal'><strong>Total: ${{cart.cart_total|floatformat:2}}</strong></h3></td>
+            <!-- <td></td> -->
+            
+            <td>
+              <a href = " {% url 'checkout' %} ">
+                <button type="button" class="btn btn-primary btn-lg">Checkout →</button></a></td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+
+    <div class = 'row justify-content-center'>
+      <div class="spinner-border text-info seen" role="status" id = 'spinner'>
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    
+    <!-- Cart Section -->
+<div class = 'container' style = 'margin-top: 50px;'>
+<table class="table table-light table-hover">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col"><h5><strong>Item</strong></h5></th>
+        <th scope="col"><h5><strong>Price</strong></h5></th>
+        <th scope="col"><h5><strong>Quantity</strong></h5></th>
+        <th scope="col"><h5><strong>Total</strong></h5></th>
+      </tr>
+    </thead>
+    <tbody>
+     
+
+      {% for item in cartitems %}
+      <tr id = 'cartitems'>
+        <th scope="row"><div id = "cart_image"><img src = {{item.product.image.url}}></div></th>
+        <td><h5>{{item.product.name}}</h5></td>
+        <td><h5>${{item.product.price|floatformat:2}}</h5></td>
+        <td><input type = 'number' class = 'quantity' value = "{{item.quantity}}"  data-price = {{item.product.price}} data-p_id = {{item.product.id}} style = 'width: 50px; padding-left: 5px'></td>
+        
+        <td><h5>${{item.subTotal | floatformat:2}}</h5></td>
+        <td><h5><button class = 'btn btn-danger del'data-p_id = {{item.product.id}} >Remove</button></h5></td>
+      </tr>
+      {% endfor %}
+      
+      
+    </tbody>
+  </table>
+</div>
+
+<script>
+  let cartitemContainer = document.getElementById('cartitems')
+    let qtyField = document.getElementsByTagName('input')
+    let grandTotal = document.getElementById('grandTotal')
+    let spinners = document.getElementsByClassName('spinner-border')
+
+    for(let i = 0; i<qtyField.length; i++){
+        qtyField[i].addEventListener('change', updateQuantity)
+    }
+    function updateQuantity(e){
+
+      
+      document.getElementById('spinner').style.display='block'
+
+        let grandParent = e.target.parentElement.parentElement
+        let subtotalParent = grandParent.children[4]
+        console.log(subtotalParent)
+
+
+        let quantity = e.target.value
+        let product_id = e.target.dataset.p_id
+        let price = e.target.dataset.price
+        let items = document.getElementById('cartTotal')
+        console.log(items)
+        console.log(quantity)
+        if(e.target.value < 2){
+            e.target.value = 1
+        }
+        
+    
+        
+    
+        const data = { id: product_id, qty: quantity, product_price: price};
+        let url = '/updatequantity'
+        fetch(url, {
+            method: 'POST', // or 'PUT'
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify(data),
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log(data)
+              qty.innerText = data.num
+             
+              document.getElementById('list_of_items').innerHTML = `<strong>Items: ${data.num}</strong>`
+              document.getElementById('cartTotal').innerHTML = `<strong>Total: $${parseFloat(data.total).toFixed(2)}</strong>`
+              subtotalParent.innerHTML = `<h5> $${parseFloat(data.qty*data.price).toFixed(2)} </h5>` 
+
+              document.getElementById('spinner').style.display='none'
+
+              
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+          
+    
+    }
+    let delBtns = document.getElementsByClassName('del')
+    for(let i = 0; i<delBtns.length; i++){
+        delBtns[i].addEventListener('click', removeCartitems)
+    }
+    function removeCartitems(e){
+        pro_id = e.target.dataset.p_id
+        console.log(pro_id)
+
+        const data = {id:pro_id}
+        let url = '/deleteitems'
+        fetch(url, {
+            method: 'POST', // or 'PUT'
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify(data),
+          })
+          .then(response => response.json())
+          .then(data =>{
+           
+              console.log(data)
+              location.reload()
+             
+              
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+          
+    }
+</script>
+
+{% endblock %}

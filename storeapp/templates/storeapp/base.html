@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Shoppit - Buy with ease</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link href="{% static 'css/all.css' %}" rel="stylesheet" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- UIkit CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.10.0/dist/css/uikit.min.css" />
+        
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet"> 
+
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+        
+        <!-- <link href="{% static 'css/uikit.css' %}" rel="stylesheet" /> -->
+        <style>
+            #qty{
+                font-size: larger;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            body{
+                font-family: 'Titillium Web', sans-serif;
+                background-color : #F0F8FF
+            }
+            .me-auto{
+                margin-right: 10px !important
+            }
+            .navbar-collapse{
+                justify-content: space-between;
+                margin-left: 20px;
+            }
+            a {
+                color: black !important;
+                text-decoration: none !important;
+            }
+        </style>
+        <script>
+
+            let user = "{{request.user}}"
+           
+      
+            function getToken(name) {
+              let cookieValue = null;
+              if (document.cookie && document.cookie !== '') {
+                  const cookies = document.cookie.split(';');
+                  for (let i = 0; i < cookies.length; i++) {
+                      const cookie = cookies[i].trim();
+                      // Does this cookie string begin with the name we want?
+                      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                          break;
+                      }
+                  }
+              }
+              return cookieValue;
+          }
+          const csrftoken = getToken('csrftoken');
+
+
+
+
+          
+		function getCookie(name) {
+		    // Split cookie string and get all individual name=value pairs in an array
+		    var cookieArr = document.cookie.split(";");
+
+		    // Loop through the array elements
+		    for(var i = 0; i < cookieArr.length; i++) {
+		        var cookiePair = cookieArr[i].split("=");
+
+		        /* Removing whitespace at the beginning of the cookie name
+		        and compare it with the given string */
+		        if(name == cookiePair[0].trim()) {
+		            // Decode the cookie value and return
+		            return decodeURIComponent(cookiePair[1]);
+		        }
+		    }
+
+		    // Return null if not found
+		    return null;
+		}
+		var cart = JSON.parse(getCookie('cart'))
+        
+		if (cart == undefined){
+			cart = {}
+			console.log('Cart Created!', cart)
+			document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+		}
+		console.log('Cart:', cart)
+          </script>
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="height: 100px">
+            <div class="container">
+                <a class="navbar-brand" href=" {% url 'index' %} ">  <h3><strong>Shoppit</strong></h3> </a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+               
+                <form class="d-flex" action= "{% url 'search' %}" method = 'GET'>
+                    <input class="form-control me-2" name = "search_query" type="search" value="{{search_query}}" placeholder="Search products and categories" aria-label="Search" style="width: 350px" required>
+                    <button class="btn btn-outline-success"  type="submit">Search</button>
+                  </form>
+
+
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="#!">About</a></li> -->
+                        <li class="nav-item dropdown">
+                            {% if request.user.is_authenticated %}
+                            
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span><i class="bi bi-person-check" style="font-size: 10px" ></i></span> Hi, {{request.user.first_name}}</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href=" {% url 'signout' %} ">Sign Out</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="{% url 'account' %}"><span><i class="bi bi-person-check"></i></span> My Account</a></li>
+                                <li><a class="dropdown-item" href=" {% url 'order' %} "><span><i class="bi bi-cart"></i></span> Orders</a></li>
+                                <li><a class="dropdown-item" href=" {% url 'saveitems' %} "><span><i class="bi bi-heart"></i></span>Saved Items</a></li>
+                            </ul>
+                            {% else %}
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span><i class="bi bi-person" style="font-size: 18px"></i></span> Account</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href=" {% url 'signin' %} ">Sign In</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="{% url 'account' %}"><span><i class="bi bi-person-check"></i></span> My Account</a></li>
+                                <li><a class="dropdown-item" href="{% url 'order' %} "><span><i class="bi bi-cart"></i></span> Orders</a></li>
+                                <li><a class="dropdown-item" href="{% url 'saveitems' %}"><span><i class="bi bi-heart"> </i>Saved Items</a></li>
+                            </ul>
+                            {% endif %}
+                        </li>
+
+                        
+
+                    <form class="d-flex" action = " {% url 'cart' %} ">
+                        <button class="btn btn-outline-dark" type="submit" style = 'width: 150px; height: auto; 
+                        display: flex; align-items:center; justify-content: space-evenly'>
+                            <i class="bi-cart-fill me-1" style = 'font-size: 30px'></i>
+                            
+                            Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill" id ='qty'style = 'width: 50px; height: 40px'> {{cart.num_of_items}} </span>
+                        </button>
+                    </form>
+                    </ul>
+                </ul>
+                
+              </div>
+            </div>
+          </nav>
+
+
+        <!-- Navigation-->
+        <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light" style = 'height: 100px'>
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href=" {% url 'index' %} ">  <h3><strong>Shoppit</strong></h3> </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    
+
+                    <form class="d-flex" action= "{% url 'search' %}" method = 'GET'>
+                        <input class="form-control me-2" name = "search_query" type="search" value="{{search_query}}" placeholder="Search" aria-label="Search" style="width: 400px" required>
+                        <button class="btn btn-outline-success"  type="submit">Search</button>
+                      </form>
+
+<div style = 'display:flex; align-items: center'>
+                      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
+                        <li class="nav-item dropdown">
+                            {% if request.user.is_authenticated %}
+                            
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span><i class="bi bi-person-check"></i></span> Hi, {{request.user.first_name}}</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href=" {% url 'signout' %} ">Sign Out</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="{% url 'account' %}"><span><i class="bi bi-person-check"></i></span> My Account</a></li>
+                                <li><a class="dropdown-item" href=" {% url 'order' %} "><span><i class="bi bi-cart"></i></span> Orders</a></li>
+                                <li><a class="dropdown-item" href=" {% url 'saveitems' %} "><span><i class="bi bi-heart"></i></span>Saved Items</a></li>
+                            </ul>
+                            {% else %}
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span><i class="bi bi-person"></i></span> Account</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href=" {% url 'signin' %} ">Sign In</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="{% url 'account' %}"><span><i class="bi bi-person-check"></i></span> My Account</a></li>
+                                <li><a class="dropdown-item" href="{% url 'order' %} "><span><i class="bi bi-cart"></i></span> Orders</a></li>
+                                <li><a class="dropdown-item" href="{% url 'saveitems' %}"><span><i class="bi bi-heart"> </i>Saved Items</a></li>
+                            </ul>
+                            {% endif %}
+                        </li>
+                    </ul>
+
+
+                    <form class="d-flex" action = " {% url 'cart' %} ">
+                        <button class="btn btn-outline-dark" type="submit" style = 'width: 150px; height: auto; 
+                        display: flex; align-items:center; justify-content: space-evenly'>
+                            <i class="bi-cart-fill me-1" style = 'font-size: 30px'></i>
+                            
+                            Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill" id ='qty'style = 'width: 50px; height: 40px'> {{cart.num_of_items}} </span>
+                        </button>
+                    </form>
+                </div>
+                
+                </div>
+            </div>
+        </nav> -->
+        {% for message in messages %}
+        <div class="alert alert-primary" id = 'alert' role="alert">
+            {{message}}
+            <button class="cancelBtn" style="margin-left: auto; font-size: 25px; background: none; border: none">X</button>
+          
+            
+            </div>
+            {% endfor %}
+       
+        
+        
+        {% block content %}
+        <h1>Hello World</h1>
+        {% endblock %}
+
+
+
+           <!-- Footer-->
+           <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Shoppit 2022</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> -->
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+        <!-- Core theme JS-->
+        <script src="{% static 'js/scripts.js' %}">
+
+        </script>
+        <script>
+            cancelBtns = document.getElementsByClassName('cancelBtn')
+            for(let i= 0; i<cancelBtns.length; i++){
+              cancelBtns[i].addEventListener('click', cancelAlert)
+            }
+            function cancelAlert(e){
+              e.target.parentElement.style.display = 'none'
+            }
+        </script>
+        
+    </body>
+</html>

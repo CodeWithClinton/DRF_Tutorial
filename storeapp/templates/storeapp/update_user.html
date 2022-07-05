@@ -1,0 +1,35 @@
+{% extends 'storeapp/base.html' %} 
+{% block content %}
+<style>
+    #container{
+        width: 30%;
+        background-color: white;
+        height: auto;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: ;
+    }
+</style>
+<br>
+<div class = 'container' id = 'container'>
+<h3>Change Address</h3>
+<br>
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+        <label> <strong>  {{field.label}}: </strong> </label>
+        {{field}}
+        <br>
+        {% endfor %}
+        <button type="submit" class = "btn btn-primary" style = "width:100%">Update Profile Info</button>
+    </form>
+</div>
+<script>
+    let inputs = document.getElementsByTagName('input')
+  for(let i = 0; i<inputs.length; i++){
+    inputs[i].classList.add('form-control')
+  }
+  
+</script>
+
+{% endblock %}
