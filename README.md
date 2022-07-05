@@ -1,2 +1,2 @@
 # DRF_Tutorial
-Building a restful api for ecommerce web application, this is the source code.
+Building a restful api for ecommerce web application, this is the source code for the 2nd episode.
