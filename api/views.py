@@ -1,55 +1,88 @@
-from itertools import product
 from urllib import response
 from django.shortcuts import render, get_object_or_404
-from api.filters import ProductFilter
 from rest_framework.decorators import api_view
-from .serializers import CartSerializer, ProductSerializer, CategorySerializer, ReviewSerializer
-from storeapp.models import Cart, Category, Product, Review
-from django_filters.rest_framework import DjangoFilterBackend
+from .serializers import ProductSerializer, CategorySerializer
+from storeapp.models import Category, Product
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.mixins import CreateModelMixin
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.pagination import PageNumberPagination
-
-
+from rest_framework.views import APIView
 
 from api import serializers
 
 # Create your views here.
-class ProductsViewSet(ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+class ApiProducts(APIView):
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = ProductSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+
+
+
+
+
+class ApiProduct(APIView):
+    def get(self, request, pk):
+        product = get_object_or_404(Product, id=pk)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        product = get_object_or_404(Product, id=pk)
+        serializer = ProductSerializer(product, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
+    def delete(self, request, pk):
+        product = get_object_or_404(Product, id=pk)
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+        
+
+
+        
     
     
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_class = ProductFilter
-    search_fields = ['name', 'description']
-    ordering_fields = ['old_price']
-    pagination_class = PageNumberPagination
 
-
-
-class CategoryViewSet(ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
-
-class ReviewViewSet(ModelViewSet):
-    serializer_class = ReviewSerializer
+class APICategories(APIView):
+    def get(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
     
-    def get_queryset(self):
-         return Review.objects.filter(product_id=self.kwargs["product_pk"])
+    def post(self, request):
+        serializer = CategorySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+class APICategory(APIView):
+    def get(self, request, pk):
+        category = get_object_or_404(Category, category_id=pk)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
     
-    def get_serializer_context(self):
-        return {"product_id": self.kwargs["product_pk"]}
-8
+    def put(self, request, pk):
+        category = get_object_or_404(Category, category_id=pk)
+        serializer = CategorySerializer(category, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
+    def delete(self, request, pk):
+        category = get_object_or_404(Category, category_id=pk)
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
         
             
-
-class CartViewSet(CreateModelMixin, GenericViewSet):
-    queryset = Cart.objects.all()
-    serializer_class = CartSerializer
-    
+        
 
