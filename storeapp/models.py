@@ -43,18 +43,20 @@ class Product(models.Model):
     top_deal=models.BooleanField(default=False)
     flash_sales = models.BooleanField(default=False)
     
+    def __str__(self):
+        return self.name
 
 
 class Cart(models.Model):
-    cart_id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     created = models.DateTimeField(auto_now_add=True)
     
 
     def __str__(self):
-        return str(self.cart_id)
+        return str(self.id)
 
 class Cartitems(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, blank=True, null=True)
+    # cart = models.ForeignKey(Cart, on_delete=models.CASCADE, blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True, related_name='cartitems')
     quantity = models.IntegerField(default=0)
     
