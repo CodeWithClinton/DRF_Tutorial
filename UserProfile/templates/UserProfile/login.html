@@ -1,0 +1,24 @@
+{% extends 'storeapp/base.html' %}
+{% block content %}
+
+<div class = 'container' style ='width: 50%'>
+    <div class = 'row'>
+        <form method = 'POST'>
+            {% csrf_token %}
+            <div class="col">
+          <input type="email" name = 'email' class="form-control" placeholder="Email Address" aria-label="Email">
+        </div>
+        <br>
+        <div class="col">
+            <input type="password" name = 'password' class="form-control" placeholder="Password" aria-label="Password">
+          </div>
+          <br>
+          <button type="submit" class = 'btn btn-lg btn-info' style="width:100%">Login to your Account</button>
+          <p>Don't have an account</p>
+          <a href =  " {% url 'signup' %} " >Signup Now</a>
+      
+        </form>
+    </div>
+</div>
+
+{% endblock %}

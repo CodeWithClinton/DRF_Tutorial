@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "_e)op=dl#c3o=yf=z0_8@)nqb*@a!d5z2&7%1sv8^pp76qlbsu"
+SECRET_KEY = os.environ.get('AWS_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,9 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storeapp',
     'core',
+    'UserProfile',
     'api',
-    'rest_framework',
-    'django_filters'
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -69,7 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-              
+                'storeapp.context_processors.cart_renderer'
             ],
         },
     },
@@ -150,11 +150,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [BASE_DIR/'static']
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = BASE_DIR/'static'
+STATICFILES_DIRS = [BASE_DIR/'static']
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR/'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -164,13 +164,9 @@ AUTH_USER_MODEL = 'core.User'
 
 
 
-# REST_FRAMEWORK = {
-#     'PAGE_SIZE': 3
-# }
 
 
-
-AWS_QUERYSTRING_AUTH = False
+# AWS_QUERYSTRING_AUTH = False
 # AWS_S3_FILE_OVERWRITE = False
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # AWS_ACCESS_KEY_ID  = os.environ.get('AWS_ACCESS_KEY')
