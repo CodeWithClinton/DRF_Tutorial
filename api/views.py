@@ -3,12 +3,12 @@ from urllib import response
 from django.shortcuts import render, get_object_or_404
 from api.filters import ProductFilter
 from rest_framework.decorators import api_view
-from .serializers import CartSerializer, ProductSerializer, CategorySerializer, ReviewSerializer
-from storeapp.models import Cart, Category, Product, Review
+from .serializers import CartSerializer, ProductSerializer, CategorySerializer, ReviewSerializer, CartItemSerializer
+from storeapp.models import Cart, Category, Product, Review, Cartitems
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
@@ -48,8 +48,15 @@ class ReviewViewSet(ModelViewSet):
         
             
 
-class CartViewSet(CreateModelMixin,RetrieveModelMixin, GenericViewSet):
+class CartViewSet(CreateModelMixin,RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
+
+
+class CartItemViewSet(ModelViewSet):
     
+    def get_queryset(self):
+        return Cartitems.objects.filter(cart_id=self.kwargs["cart_pk"])
+    
+    serializer_class = CartItemSerializer
 

@@ -1,3 +1,4 @@
+from importlib.resources import read_binary
 from itertools import product
 from rest_framework import serializers
 from  storeapp.models import Cart, Cartitems, Category, Product, Review
@@ -52,7 +53,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
-    items = CartItemSerializer(many=True)
+    items = CartItemSerializer(many=True, read_only=True)
     grand_total = serializers.SerializerMethodField(method_name='main_total')
     
     class Meta:
