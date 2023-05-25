@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,7 @@ SECRET_KEY = "_e)op=dl#c3o=yf=z0_8@)nqb*@a!d5z2&7%1sv8^pp76qlbsu"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'my-shoppit.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'my-shoppit.herokuapp.com']
 
 
 # Application definition
@@ -42,7 +43,8 @@ INSTALLED_APPS = [
     'core',
     'api',
     'rest_framework',
-    'django_filters'
+    'django_filters',
+    'djoser'
 ]
 
 MIDDLEWARE = [
@@ -88,14 +90,22 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'ecom',
+#         'USER': 'postgres',
+#         'PASSWORD': 'database',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ecom',
-        'USER': 'postgres',
-        'PASSWORD': 'database',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -177,3 +187,26 @@ AWS_QUERYSTRING_AUTH = False
 # AWS_SECRET_ACCESS_KEY =  os.environ.get('AWS_SECRET_KEY')
 # AWS_STORAGE_BUCKET_NAME = 'shopit-bucket'
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
+}
+
+
+# "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY3MjMxMDM0MywiaWF0IjoxNjcyMTM3NTQzLCJqdGkiOiI4ZTA2ZjFmNTZmMjg0NjdjOGUxYTczMmIwZWM3ODkwZSIsInVzZXJfaWQiOjh9.cmnXNQBWapetuPG2TQpoVNjm6NEvzT7awz-wvjPrPUg",
+#     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjcyMjIzOTQzLCJpYXQiOjE2NzIxMzc1NDMsImp0aSI6ImQxYjcxNzBiMjgyNTRlNjg4ZjgwNTM0NGViMTYzYjU5IiwidXNlcl9pZCI6OH0.garu_BNiSM5fB48TRbRMXypgECuSmt4ErveOVsynISQ"
+
+DJOSER = {
+    'SERIALIZERS':{
+        'user_create': "core.serializers.MyUserCreateSerializer"
+    }
+}

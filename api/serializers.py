@@ -1,7 +1,7 @@
 from importlib.resources import read_binary
 from itertools import product
 from rest_framework import serializers
-from  storeapp.models import Cart, Cartitems, Category, Product, Review
+from  storeapp.models import *
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -84,6 +84,12 @@ class AddCartItemSerializer(serializers.ModelSerializer):
 
 
 
+class UpdateCartItemSerializer(serializers.ModelSerializer):
+    # id = serializers.IntegerField(read_only=True)
+    class Meta:
+        model = Cartitems
+        fields = ["quantity"]
+
 
 class CartSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
@@ -102,3 +108,23 @@ class CartSerializer(serializers.ModelSerializer):
         return total
 
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = SimpleProductSerializer()
+    class Meta:
+        model = OrderItem 
+        fields = ["id", "product", "quantity"]
+        
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True)
+    class Meta:
+        model = Order 
+        fields = ['id', "placed_at", "pending_status", "owner", "items"]
+        
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ["id", "name", 'bio', "picture"]
